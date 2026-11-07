@@ -1,0 +1,639 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Footballer Career</title>
+<meta name="description" content="Footballer Career – football career simulator. Spin the wheel and write your own football story. Free on Android and iOS.">
+<meta name="theme-color" content="#07122b">
+<meta name="color-scheme" content="dark">
+<meta name="apple-itunes-app" content="app-id=6767044929">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Footballer Career">
+<meta property="og:description" content="Football career simulator. Free on Android and iOS.">
+<meta property="og:url" content="https://furkanwesc.github.io/Footballer-Career/">
+<meta property="og:image" content="https://furkanwesc.github.io/Footballer-Career/logo.jpg">
+<meta property="og:image:width" content="400">
+<meta property="og:image:height" content="400">
+<meta property="og:image:alt" content="Footballer Career">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://furkanwesc.github.io/Footballer-Career/">
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07122b;
+    --bg2: #0b1d45;
+    --blue: #2a6bf0;
+    --gold: #f5c451;
+    --gold2: #d9951f;
+    --text: #f3f6fc;
+    --muted: #a8b5cf;
+    --glass: rgba(255, 255, 255, 0.06);
+    --glass-line: rgba(255, 255, 255, 0.12);
+    --display: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    --body: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    min-height: 100svh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    line-height: 1.5;
+    overflow-x: hidden;
+  }
+
+  /* Stadium atmosphere: blurred key art + light glows */
+  .bg, .bg::after { position: fixed; inset: 0; pointer-events: none; }
+  .bg {
+    z-index: 0;
+    background:
+      radial-gradient(60% 40% at 15% 0%, rgba(255, 214, 120, 0.22), transparent 70%),
+      radial-gradient(60% 40% at 85% 0%, rgba(120, 170, 255, 0.22), transparent 70%),
+      radial-gradient(90% 60% at 50% 110%, rgba(40, 160, 90, 0.20), transparent 70%),
+      linear-gradient(180deg, var(--bg2) 0%, var(--bg) 60%);
+  }
+  .bg::before {
+    content: "";
+    position: absolute;
+    inset: -10%;
+    background: url("logo.jpg") center 30% / cover no-repeat;
+    filter: blur(48px) saturate(1.3);
+    opacity: 0.22;
+  }
+  .bg::after {
+    content: "";
+    background: radial-gradient(120% 80% at 50% 30%, transparent 40%, rgba(4, 10, 26, 0.75) 100%);
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: max(40px, env(safe-area-inset-top)) 16px max(28px, env(safe-area-inset-bottom));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .icon {
+    width: 132px;
+    height: 132px;
+    border-radius: 30px;
+    display: block;
+    box-shadow:
+      0 0 0 2px rgba(245, 196, 81, 0.75),
+      0 0 40px rgba(245, 196, 81, 0.35),
+      0 22px 50px rgba(0, 0, 0, 0.55);
+  }
+
+  .eyebrow {
+    margin: 26px 0 6px;
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+  }
+  h1 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(34px, 10vw, 46px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  h1 .gold {
+    background: linear-gradient(180deg, #ffe08a 0%, var(--gold) 45%, var(--gold2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .tagline {
+    margin: 14px 0 0;
+    max-width: 380px;
+    font-size: 16px;
+    color: var(--muted);
+  }
+
+  /* Store badges */
+  .stores {
+    margin-top: 28px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+  }
+  .store {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 52px;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+  }
+  .store:active { transform: scale(0.97); }
+  @media (hover: hover) {
+    .store:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgba(0, 0, 0, 0.55); }
+  }
+  .store:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .store img { display: block; }
+  /* Apple badge has no padding; Google's PNG has 1/4-height clear space on every side */
+  .store.apple img { height: 52px; width: auto; }
+  .store.google img { height: 78px; width: auto; margin: -13px; }
+  .store.primary { box-shadow: 0 0 0 2px rgba(245, 196, 81, 0.55), 0 10px 30px rgba(0, 0, 0, 0.5); }
+  .store .fallback {
+    display: none;
+    padding: 0 20px;
+    height: 52px;
+    align-items: center;
+    background: #000;
+    color: #fff;
+    border: 1px solid #a6a6a6;
+    border-radius: 10px;
+    font: 600 17px var(--display);
+  }
+  .store.broken img { display: none; }
+  .store.broken .fallback { display: inline-flex; }
+
+  /* Phones: stack the badges; the visitor's own store comes first and larger */
+  @media (max-width: 519px) {
+    .stores { flex-direction: column; align-items: center; }
+    .has-primary .store { height: 46px; }
+    .has-primary .store.apple img { height: 46px; }
+    .has-primary .store.google img { height: 69px; margin: -11.5px; }
+    .has-primary .store .fallback { height: 46px; }
+    .has-primary .store.primary { height: 58px; }
+    .has-primary .store.primary.apple img { height: 58px; }
+    .has-primary .store.primary.google img { height: 87px; margin: -14.5px; }
+    .has-primary .store.primary .fallback { height: 58px; }
+  }
+
+  .free {
+    margin: 14px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .free::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #3ddc84;
+    box-shadow: 0 0 10px #3ddc84;
+  }
+
+  /* Hint for Instagram / Facebook / TikTok in-app browsers */
+  .hint {
+    display: none;
+    margin-top: 22px;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(245, 196, 81, 0.1);
+    border: 1px solid rgba(245, 196, 81, 0.45);
+    text-align: start;
+    align-items: center;
+    gap: 14px;
+  }
+  .in-app .hint { display: flex; }
+  .hint .dots {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--gold);
+    color: #1a1200;
+    font: 800 22px/1 var(--display);
+    letter-spacing: 1px;
+  }
+  .hint b { display: block; font-size: 15px; }
+  .hint span { display: block; font-size: 14px; color: #e6dcc3; }
+  .pointer {
+    display: none;
+    position: fixed;
+    top: 6px;
+    right: 14px;
+    z-index: 2;
+    color: var(--gold);
+    font: 800 30px/1 var(--display);
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+    animation: nudge 1.4s ease-in-out infinite;
+  }
+  .in-app .pointer { display: block; }
+  [dir="rtl"] .pointer { display: none !important; }
+  @keyframes nudge { 0%, 100% { transform: translate(0, 0); } 50% { transform: translate(4px, -6px); } }
+
+  /* Features */
+  .features {
+    list-style: none;
+    margin: 34px 0 0;
+    padding: 0;
+    width: 100%;
+    display: grid;
+    gap: 10px;
+  }
+  .features li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: var(--glass);
+    border: 1px solid var(--glass-line);
+    text-align: start;
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+  }
+  .features .ico {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(160deg, #ffe08a, var(--gold2));
+    color: #2a1a00;
+  }
+  .features svg { width: 24px; height: 24px; }
+  .features b { display: block; font-family: var(--display); font-weight: 800; font-size: 15px; }
+  .features span { display: block; font-size: 14px; color: var(--muted); }
+
+  footer {
+    margin-top: 36px;
+    width: 100%;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  footer nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 18px; }
+  footer a { color: var(--text); text-decoration: none; opacity: 0.85; }
+  footer a:hover { opacity: 1; text-decoration: underline; }
+  .lang {
+    margin-top: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .lang select {
+    appearance: none;
+    -webkit-appearance: none;
+    background: var(--glass);
+    color: var(--text);
+    border: 1px solid var(--glass-line);
+    border-radius: 999px;
+    padding: 7px 30px 7px 14px;
+    font: inherit;
+    font-size: 13px;
+    background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%);
+    background-position: calc(100% - 16px) 52%, calc(100% - 11px) 52%;
+    background-size: 5px 5px;
+    background-repeat: no-repeat;
+  }
+  [dir="rtl"] .lang select { padding: 7px 14px 7px 30px; background-position: 16px 52%, 11px 52%; }
+  .lang select option { color: #111; }
+  .copy { margin: 14px 0 0; font-size: 12px; opacity: 0.7; }
+
+  /* Entrance */
+  .rise { animation: rise 0.6s cubic-bezier(.2, .8, .2, 1) both; }
+  .d1 { animation-delay: .05s; } .d2 { animation-delay: .12s; } .d3 { animation-delay: .2s; } .d4 { animation-delay: .28s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .rise, .pointer { animation: none; }
+  }
+
+  @media (min-width: 760px) {
+    .page { max-width: 560px; padding-top: 72px; }
+    .icon { width: 148px; height: 148px; border-radius: 34px; }
+    .store, .store .fallback { height: 56px; }
+    .store.apple img { height: 56px; }
+    .store.google img { height: 84px; margin: -14px; }
+  }
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+<div class="pointer" aria-hidden="true">↗</div>
+
+<main class="page">
+  <img class="icon rise" src="logo.jpg" width="132" height="132" alt="Footballer Career">
+
+  <p class="eyebrow rise d1" data-i18n="sub">Football Career Simulator</p>
+  <h1 class="rise d1">Footballer <span class="gold">Career</span></h1>
+  <p class="tagline rise d2" data-i18n="tag">Spin the wheel and write your own football story — from young talent to legend.</p>
+
+  <div class="stores rise d3" id="stores">
+    <a class="store google" id="google"
+       href="https://play.google.com/store/apps/details?id=com.mfe54.futbolkariyeri"
+       target="_blank" rel="noopener">
+      <img id="google-img" alt="Get it on Google Play"
+           src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png">
+      <span class="fallback">Google Play</span>
+    </a>
+    <a class="store apple" id="apple"
+       href="https://apps.apple.com/app/id6767044929"
+       target="_blank" rel="noopener">
+      <img id="apple-img" alt="Download on the App Store"
+           src="https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/en-us?size=250x83">
+      <span class="fallback">App Store</span>
+    </a>
+  </div>
+  <p class="free rise d3" data-i18n="free">Free on Android &amp; iOS</p>
+
+  <div class="hint" role="note">
+    <div class="dots" aria-hidden="true">⋯</div>
+    <div>
+      <b data-i18n="hintT">Store didn't open?</b>
+      <span data-i18n="hintD">Tap ⋯ at the top right and choose “Open in external browser”.</span>
+    </div>
+  </div>
+
+  <ul class="features rise d4">
+    <li>
+      <div class="ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.2"/><path d="M12 3v6.8M12 14.2V21M3 12h6.8M14.2 12H21M5.6 5.6l4.9 4.9M13.5 13.5l4.9 4.9M18.4 5.6l-4.9 4.9M10.5 13.5l-4.9 4.9"/></svg>
+      </div>
+      <div><b data-i18n="f1t">Spin the wheel</b><span data-i18n="f1d">Transfers, goals and big moments are decided by the wheel every season.</span></div>
+    </li>
+    <li>
+      <div class="ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3"/></svg>
+      </div>
+      <div><b data-i18n="f2t">Win trophies</b><span data-i18n="f2d">Chase league titles, continental cups and Player of the Year.</span></div>
+    </li>
+    <li>
+      <div class="ico" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4"/><path d="M5 4h11l-2 4 2 4H5"/></svg>
+      </div>
+      <div><b data-i18n="f3t">Play for your country</b><span data-i18n="f3d">Earn your call-up and lead your national team.</span></div>
+    </li>
+  </ul>
+
+  <footer>
+    <nav>
+      <a href="https://sites.google.com/view/footballer-career-privacy" target="_blank" rel="noopener" data-i18n="privacy">Privacy Policy</a>
+      <a href="https://www.instagram.com/maxmin.app/" target="_blank" rel="noopener">Instagram</a>
+      <a href="mailto:maxminappsupport@gmail.com" data-i18n="contact">Contact</a>
+    </nav>
+    <label class="lang">
+      <span aria-hidden="true">🌐</span>
+      <select id="lang" aria-label="Language">
+        <option value="en">English</option>
+        <option value="tr">Türkçe</option>
+        <option value="de">Deutsch</option>
+        <option value="es">Español</option>
+        <option value="fr">Français</option>
+        <option value="it">Italiano</option>
+        <option value="pt">Português</option>
+        <option value="pl">Polski</option>
+        <option value="ru">Русский</option>
+        <option value="uk">Українська</option>
+        <option value="ar">العربية</option>
+        <option value="ko">한국어</option>
+      </select>
+    </label>
+    <p class="copy" dir="ltr">© 2026 MaxMin Application</p>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var T = {
+    en: {
+      sub: "Football Career Simulator",
+      tag: "Spin the wheel and write your own football story — from young talent to legend.",
+      free: "Free on Android & iOS",
+      hintT: "Store didn't open?",
+      hintD: "Tap ⋯ at the top right and choose “Open in external browser”.",
+      f1t: "Spin the wheel", f1d: "Transfers, goals and big moments are decided by the wheel every season.",
+      f2t: "Win trophies", f2d: "Chase league titles, continental cups and Player of the Year.",
+      f3t: "Play for your country", f3d: "Earn your call-up and lead your national team.",
+      privacy: "Privacy Policy", contact: "Contact"
+    },
+    tr: {
+      sub: "Futbolcu Kariyer Simülasyonu",
+      tag: "Çarkı çevir, kendi futbol hikâyeni yaz — genç yetenekten efsaneye.",
+      free: "Android ve iOS'ta ücretsiz",
+      hintT: "Mağaza açılmadı mı?",
+      hintD: "Sağ üstteki ⋯ simgesine dokun ve “Harici tarayıcıda aç”ı seç.",
+      f1t: "Çarkı çevir", f1d: "Transferler, goller ve büyük anlar her sezon çarkla belirlenir.",
+      f2t: "Kupaları topla", f2d: "Lig şampiyonlukları, kıta kupaları ve Yılın Oyuncusu ödülü seni bekliyor.",
+      f3t: "Ülkeni temsil et", f3d: "Millî takıma çağrıl, ülkenin formasını giy.",
+      privacy: "Gizlilik Politikası", contact: "İletişim"
+    },
+    de: {
+      sub: "Fußballkarriere-Simulator",
+      tag: "Dreh am Rad und schreib deine eigene Fußballgeschichte – vom jungen Talent zur Legende.",
+      free: "Kostenlos für Android & iOS",
+      hintT: "Store nicht geöffnet?",
+      hintD: "Tippe oben rechts auf ⋯ und wähle „Im externen Browser öffnen“.",
+      f1t: "Dreh am Rad", f1d: "Transfers, Tore und große Momente – jede Saison entscheidet das Rad.",
+      f2t: "Hol dir Titel", f2d: "Meisterschaften, Kontinentalpokale und die Wahl zum Spieler des Jahres.",
+      f3t: "Spiel für dein Land", f3d: "Verdien dir die Nominierung und führe deine Nationalmannschaft an.",
+      privacy: "Datenschutzerklärung", contact: "Kontakt"
+    },
+    es: {
+      sub: "Simulador de carrera futbolística",
+      tag: "Gira la rueda y escribe tu propia historia en el fútbol: de joven promesa a leyenda.",
+      free: "Gratis en Android e iOS",
+      hintT: "¿No se abrió la tienda?",
+      hintD: "Toca ⋯ arriba a la derecha y elige «Abrir en el navegador externo».",
+      f1t: "Gira la rueda", f1d: "Fichajes, goles y grandes momentos: la rueda decide cada temporada.",
+      f2t: "Gana títulos", f2d: "Ligas, copas continentales y el premio al Jugador del Año.",
+      f3t: "Juega por tu país", f3d: "Gánate la convocatoria y lidera a tu selección.",
+      privacy: "Política de privacidad", contact: "Contacto"
+    },
+    fr: {
+      sub: "Simulateur de carrière de footballeur",
+      tag: "Fais tourner la roue et écris ta propre histoire, de jeune talent à légende.",
+      free: "Gratuit sur Android et iOS",
+      hintT: "La boutique ne s'est pas ouverte ?",
+      hintD: "Touche ⋯ en haut à droite et choisis « Ouvrir dans le navigateur externe ».",
+      f1t: "Fais tourner la roue", f1d: "Transferts, buts et grands moments : la roue décide à chaque saison.",
+      f2t: "Remporte des trophées", f2d: "Titres de champion, coupes continentales et Joueur de l'année.",
+      f3t: "Joue pour ton pays", f3d: "Mérite ta sélection et mène ton équipe nationale.",
+      privacy: "Politique de confidentialité", contact: "Contact"
+    },
+    it: {
+      sub: "Simulatore di carriera calcistica",
+      tag: "Gira la ruota e scrivi la tua storia nel calcio: da giovane talento a leggenda.",
+      free: "Gratis su Android e iOS",
+      hintT: "Lo store non si è aperto?",
+      hintD: "Tocca ⋯ in alto a destra e scegli “Apri nel browser esterno”.",
+      f1t: "Gira la ruota", f1d: "Trasferimenti, gol e grandi momenti: a ogni stagione decide la ruota.",
+      f2t: "Vinci trofei", f2d: "Campionati, coppe continentali e il premio di Giocatore dell'anno.",
+      f3t: "Gioca per il tuo Paese", f3d: "Conquista la convocazione e guida la tua nazionale.",
+      privacy: "Informativa sulla privacy", contact: "Contatti"
+    },
+    pt: {
+      sub: "Simulador de carreira no futebol",
+      tag: "Gire a roda e escreva sua própria história no futebol — de jovem talento a lenda.",
+      free: "Grátis para Android e iOS",
+      hintT: "A loja não abriu?",
+      hintD: "Toque em ⋯ no canto superior direito e escolha “Abrir no navegador externo”.",
+      f1t: "Gire a roda", f1d: "Transferências, gols e grandes momentos: a roda decide a cada temporada.",
+      f2t: "Conquiste títulos", f2d: "Campeonatos, copas continentais e o prêmio de Jogador do Ano.",
+      f3t: "Jogue pela seleção", f3d: "Ganhe a convocação e lidere a sua seleção.",
+      privacy: "Política de Privacidade", contact: "Contato"
+    },
+    pl: {
+      sub: "Symulator kariery piłkarza",
+      tag: "Zakręć kołem i napisz własną piłkarską historię — od młodego talentu do legendy.",
+      free: "Za darmo na Androida i iOS",
+      hintT: "Sklep się nie otworzył?",
+      hintD: "Stuknij ⋯ w prawym górnym rogu i wybierz „Otwórz w zewnętrznej przeglądarce”.",
+      f1t: "Zakręć kołem", f1d: "Transfery, gole i wielkie chwile — w każdym sezonie decyduje koło.",
+      f2t: "Zdobywaj trofea", f2d: "Mistrzostwa ligi, puchary kontynentalne i tytuł Piłkarza Roku.",
+      f3t: "Graj dla kraju", f3d: "Zasłuż na powołanie i poprowadź swoją reprezentację.",
+      privacy: "Polityka prywatności", contact: "Kontakt"
+    },
+    ru: {
+      sub: "Симулятор карьеры футболиста",
+      tag: "Крути колесо и напиши свою футбольную историю — от юного таланта до легенды.",
+      free: "Бесплатно на Android и iOS",
+      hintT: "Магазин не открылся?",
+      hintD: "Нажми ⋯ в правом верхнем углу и выбери «Открыть во внешнем браузере».",
+      f1t: "Крути колесо", f1d: "Трансферы, голы и яркие моменты — каждый сезон решает колесо.",
+      f2t: "Выигрывай трофеи", f2d: "Чемпионства, континентальные кубки и звание игрока года.",
+      f3t: "Играй за сборную", f3d: "Заслужи вызов и веди свою сборную вперёд.",
+      privacy: "Политика конфиденциальности", contact: "Контакты"
+    },
+    uk: {
+      sub: "Симулятор кар'єри футболіста",
+      tag: "Крути колесо й напиши власну футбольну історію — від юного таланту до легенди.",
+      free: "Безкоштовно на Android та iOS",
+      hintT: "Магазин не відкрився?",
+      hintD: "Натисни ⋯ у правому верхньому куті й обери «Відкрити в зовнішньому браузері».",
+      f1t: "Крути колесо", f1d: "Трансфери, голи та яскраві моменти — щосезону вирішує колесо.",
+      f2t: "Вигравай трофеї", f2d: "Чемпіонства, континентальні кубки та звання гравця року.",
+      f3t: "Грай за збірну", f3d: "Заслужи виклик і веди свою збірну вперед.",
+      privacy: "Політика конфіденційності", contact: "Контакти"
+    },
+    ar: {
+      sub: "محاكي مسيرة لاعب كرة القدم",
+      tag: "أدِر العجلة واكتب قصتك الكروية بنفسك — من موهبة شابة إلى أسطورة.",
+      free: "مجاني على Android وiOS",
+      hintT: "لم يُفتح المتجر؟",
+      hintD: "اضغط على ⋯ في أعلى الشاشة واختر «الفتح في متصفح خارجي».",
+      f1t: "أدِر العجلة", f1d: "الانتقالات والأهداف واللحظات الكبرى… العجلة تقرر في كل موسم.",
+      f2t: "احصد الألقاب", f2d: "بطولات الدوري والكؤوس القارية وجائزة لاعب العام.",
+      f3t: "العب لمنتخب بلادك", f3d: "استحق الاستدعاء وقُد منتخبك الوطني.",
+      privacy: "سياسة الخصوصية", contact: "تواصل معنا"
+    },
+    ko: {
+      sub: "축구 선수 커리어 시뮬레이터",
+      tag: "휠을 돌려 나만의 축구 이야기를 써 보세요 — 유망주에서 레전드까지.",
+      free: "Android 및 iOS 무료",
+      hintT: "스토어가 열리지 않나요?",
+      hintD: "오른쪽 위의 ⋯ 를 누르고 '외부 브라우저에서 열기'를 선택하세요.",
+      f1t: "휠을 돌리세요", f1d: "이적, 골, 결정적인 순간까지 매 시즌 휠이 결정합니다.",
+      f2t: "트로피를 차지하세요", f2d: "리그 우승, 대륙 컵 대회, 그리고 올해의 선수상.",
+      f3t: "국가대표로 뛰세요", f3d: "대표팀에 발탁되어 조국을 이끄세요.",
+      privacy: "개인정보처리방침", contact: "문의"
+    }
+  };
+
+  // Official badge languages (Google uses "ua" for Ukrainian; Apple falls back to English when a locale is missing)
+  var BADGE = {
+    en: ["en", "en-us"], tr: ["tr", "tr-tr"], de: ["de", "de-de"], es: ["es", "es-es"],
+    fr: ["fr", "fr-fr"], it: ["it", "it-it"], pt: ["pt-br", "pt-br"], pl: ["pl", "pl-pl"],
+    ru: ["ru", "ru-ru"], uk: ["ua", "uk-ua"], ar: ["ar", "ar-sa"], ko: ["ko", "ko-kr"]
+  };
+  var ALT = {
+    google: { en: "Get it on Google Play", tr: "Google Play'den alın" },
+    apple: { en: "Download on the App Store", tr: "App Store'dan indirin" }
+  };
+
+  function store(key, val) {
+    try {
+      if (val === undefined) return localStorage.getItem(key);
+      localStorage.setItem(key, val);
+    } catch (e) { return null; }
+  }
+
+  function pickLang() {
+    var q = (location.search.match(/[?&]lang=([a-z]{2})/i) || [])[1];
+    if (q && T[q.toLowerCase()]) return q.toLowerCase();
+    var saved = store("fc_lang");
+    if (saved && T[saved]) return saved;
+    var list = navigator.languages || [navigator.language || "en"];
+    for (var i = 0; i < list.length; i++) {
+      var code = String(list[i]).slice(0, 2).toLowerCase();
+      if (T[code]) return code;
+    }
+    return "en";
+  }
+
+  function apply(lang) {
+    var t = T[lang] || T.en;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+    var nodes = document.querySelectorAll("[data-i18n]");
+    for (var i = 0; i < nodes.length; i++) {
+      var k = nodes[i].getAttribute("data-i18n");
+      if (t[k]) nodes[i].textContent = t[k];
+    }
+    var b = BADGE[lang] || BADGE.en;
+    var g = document.getElementById("google-img");
+    var a = document.getElementById("apple-img");
+    g.src = "https://play.google.com/intl/en_us/badges/static/images/badges/" + b[0] + "_badge_web_generic.png";
+    a.src = "https://toolbox.marketingtools.apple.com/api/badges/download-on-the-app-store/black/" + b[1] + "?size=250x83";
+    g.alt = ALT.google[lang] || ALT.google.en;
+    a.alt = ALT.apple[lang] || ALT.apple.en;
+    document.getElementById("lang").value = lang;
+  }
+
+  // If a badge image cannot load, show a plain text button instead
+  ["google", "apple"].forEach(function (id) {
+    var link = document.getElementById(id);
+    var img = document.getElementById(id + "-img");
+    img.addEventListener("error", function () { link.classList.add("broken"); });
+    img.addEventListener("load", function () { link.classList.remove("broken"); });
+  });
+
+  // Device: put the matching store first and highlight it
+  var ua = navigator.userAgent || "";
+  var isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  var isAndroid = /Android/i.test(ua);
+  var stores = document.getElementById("stores");
+  if (isIOS) {
+    stores.insertBefore(document.getElementById("apple"), document.getElementById("google"));
+    document.getElementById("apple").classList.add("primary");
+    stores.classList.add("has-primary");
+  } else if (isAndroid) {
+    document.getElementById("google").classList.add("primary");
+    stores.classList.add("has-primary");
+  }
+
+  // In-app browsers (Instagram, Facebook, TikTok…) sometimes refuse to open the stores
+  if (/Instagram|FBAN|FBAV|FB_IAB|FBIOS|musical_ly|TikTok|BytedanceWebview|Snapchat/i.test(ua)) {
+    document.body.classList.add("in-app");
+  }
+
+  var lang = pickLang();
+  apply(lang);
+  document.getElementById("lang").addEventListener("change", function () {
+    store("fc_lang", this.value);
+    apply(this.value);
+  });
+})();
+</script>
+</body>
+</html>
